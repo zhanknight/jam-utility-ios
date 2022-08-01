@@ -7,8 +7,10 @@
 
 import SwiftUI
 
+
+
 //the scale struct
-struct Scale {
+struct Scale: Identifiable {
     let id = UUID()
     var quality: String
     var intervals: Array<Int>
@@ -18,8 +20,6 @@ struct Scale {
     }
     // build scale from given root note
     func notes(root: String) -> Array<String> {
-        let allNotes = ["A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab",
-                        "A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"]
             let startNote = allNotes.firstIndex(of: root)!
             var theNotes: Array<String> = []
                 theNotes.append(allNotes[startNote])
@@ -30,21 +30,21 @@ struct Scale {
     }
 }
 
+let allNotes = ["A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab",
+                "A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"]
+let allNotesUnique = Array(Set(allNotes))
+
 // the definitions
-let major = Scale(quality: "major", intervals: [2,4,5,7,9,11])
-let minor = Scale(quality: "minor", intervals: [2,3,5,7,8,10])
+let major = Scale(quality: "Major", intervals: [2,4,5,7,9,11])
+let minor = Scale(quality: "Minor", intervals: [2,3,5,7,8,10])
+let dorian = Scale(quality: "Dorian", intervals: [2,3,5,7,9,10])
+let phrygian = Scale(quality: "Phrygian", intervals: [1,3,5,7,8,10])
+let lydian = Scale(quality: "Lydian", intervals: [2,4,6,7,9,11])
+let mixolydian = Scale(quality: "Mixolydian", intervals: [2,4,5,7,9,10])
+let locrian = Scale(quality: "Locrian", intervals: [1,3,5,6,8,10])
 
 //all available definitions
-let allDefinitions = [major, minor]
-
-
-struct Result {
-    var root: String
-    var notes: Array<String>
-}
-
-
-
+let allDefinitions = [major, minor, dorian, phrygian, lydian, mixolydian, locrian]
 
 
 // the UI
@@ -57,13 +57,18 @@ struct ContentView: View {
                     Text("Note buttons go here")
                     List {
                         
-                        ForEach(allDefinitions, id: \.id) { x in
+                        ForEach(allDefinitions) { definition in
+                            
+                            
+                            ForEach(allNotesUnique, id: \.self) { note in
+                                
                             HStack {
-                                Text(x.quality).foregroundColor(.red)
+                                Text(definition.quality).foregroundColor(.red)
                                 VStack {
-                                    Text(x.notes(root: "A").joined(separator: ", "))
-                                    Text(x.chords(root: "A").joined(separator: " & "))
+                                    Text(definition.notes(root: note).joined(separator: ", "))
+                                    Text(definition.chords(root: note).joined(separator: " "))
                                 }
+                            }
                             }
                         }
                         }
