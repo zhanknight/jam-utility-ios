@@ -13,7 +13,7 @@ struct Scale: Identifiable {
     let id = UUID()
     var quality: String
     var intervals: Array<Int>
-    // build chords
+    // build chords eventually
     func chords(root: String) -> Array<String> {
         return ["chords","go","here"]
     }
@@ -46,25 +46,32 @@ let locrian = Scale(quality: "Locrian", intervals: [1,3,5,6,8,10])
 let allDefinitions = [major, minor, dorian, phrygian, lydian, mixolydian, locrian]
 
 
-//for definition in allDefinitions {
-//    for note in allNotesUnique {
-//        testtest.append(definition)
-//    }
-//}
-
-
 
 // the UI
 struct ContentView: View {
     
-    @State var selectedNotes: Set = ["C#/Db", "A#/Bb", "G"]
+    @State private var selectedNotes: Set<String> = []
     
     var body: some View {
         NavigationView {
             ZStack {
                 Color.init(red: 0.2, green: 0.3, blue: 0.5, opacity: 0.5)
                 VStack {
-                    Text("Note buttons go here")
+                    HStack {
+                        ForEach(allNotesUnique, id: \.self) { note in
+                            Button(note) {
+                                if selectedNotes.contains(note) {
+                                    selectedNotes.remove(note)
+                                }
+                                else {
+                                    selectedNotes.insert(note)
+                                }
+                                print(selectedNotes)
+
+                            }
+
+                        }
+                    }
                     List {
                         
                         ForEach(allDefinitions) { definition in
