@@ -8,7 +8,6 @@
 import SwiftUI
 
 
-
 //the scale struct
 struct Scale: Identifiable {
     let id = UUID()
@@ -19,12 +18,12 @@ struct Scale: Identifiable {
         return ["chords","go","here"]
     }
     // build scale from given root note
-    func notes(root: String) -> Array<String> {
+    func notes(root: String) -> Set<String> {
             let startNote = allNotes.firstIndex(of: root)!
-            var theNotes: Array<String> = []
-                theNotes.append(allNotes[startNote])
+            var theNotes: Set<String> = []
+                theNotes.insert(allNotes[startNote])
                     for num in intervals {
-                        theNotes.append(allNotes[startNote + num])
+                        theNotes.insert(allNotes[startNote + num])
                     }
             return theNotes
     }
@@ -47,8 +46,19 @@ let locrian = Scale(quality: "Locrian", intervals: [1,3,5,6,8,10])
 let allDefinitions = [major, minor, dorian, phrygian, lydian, mixolydian, locrian]
 
 
+//for definition in allDefinitions {
+//    for note in allNotesUnique {
+//        testtest.append(definition)
+//    }
+//}
+
+
+
 // the UI
 struct ContentView: View {
+    
+    @State var selectedNotes: Set = ["C#/Db", "A#/Bb", "G"]
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -61,13 +71,14 @@ struct ContentView: View {
                             
                             
                             ForEach(allNotesUnique, id: \.self) { note in
-                                
+                                if definition.notes(root: note).isSuperset(of: selectedNotes) {
                             HStack {
                                 Text(definition.quality).foregroundColor(.red)
                                 VStack {
                                     Text(definition.notes(root: note).joined(separator: ", "))
                                     Text(definition.chords(root: note).joined(separator: " "))
                                 }
+                            }
                             }
                             }
                         }
