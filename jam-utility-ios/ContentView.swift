@@ -15,11 +15,11 @@ struct Scale: Identifiable {
     var intervals: Array<Int>
     var root: String = "A"
     // build chords eventually
-    func chords(root: String) -> Array<String> {
+    func chords() -> Array<String> {
         return ["chords","go","here"]
     }
     // build scale from given root note
-    func notes(root: String) -> Set<String> {
+    func notes() -> Set<String> {
             let startNote = allNotes.firstIndex(of: root)!
             var theNotes: Set<String> = []
                 theNotes.insert(allNotes[startNote])
@@ -35,8 +35,8 @@ let allNotes = ["A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb"
 let allNotesUnique = Array(Set(allNotes))
 
 // the definitions
-let major = Scale(quality: "Major", intervals: [2,4,5,7,9,11], root: "B")
-let minor = Scale(quality: "Minor", intervals: [2,3,5,7,8,10], root: "B")
+let major = Scale(quality: "Major", intervals: [2,4,5,7,9,11])
+let minor = Scale(quality: "Minor", intervals: [2,3,5,7,8,10])
 let dorian = Scale(quality: "Dorian", intervals: [2,3,5,7,9,10])
 let phrygian = Scale(quality: "Phrygian", intervals: [1,3,5,7,8,10])
 let lydian = Scale(quality: "Lydian", intervals: [2,4,6,7,9,11])
@@ -80,28 +80,24 @@ struct ContentView: View {
                                 else {
                                     selectedNotes.insert(note)
                                 }
-                                print(selectedNotes)
-                                print(test)
                             }
-
                         }
                     }
                     // results here
                     List {
-                        ForEach(allDefinitions) { definition in
-                            ForEach(allNotesUnique, id: \.self) { note in
-                                if definition.notes(root: note).isSuperset(of: selectedNotes) {
-                            HStack {
-                                Text(definition.quality).foregroundColor(.red)
-                                VStack {
-                                    Text(definition.notes(root: note).joined(separator: ", "))
-                                    Text(definition.chords(root: note).joined(separator: " "))
-                                }
+                        ForEach(test) { scales in
+                            if scales.notes().isSuperset(of: selectedNotes) {
+                                HStack {
+                                    Text(scales.quality).foregroundColor(.red)
+                                    VStack {
+                                        Text(scales.notes().joined(separator: ", "))
+                                        Text(scales.chords().joined(separator: " "))
+                                    }
                                 }
                             }
-                            }
+
                         }
-                        }
+                    }
                     Text("reset button at the bottom")
                 }
             }.navigationTitle("Jam Utility").navigationBarTitleDisplayMode(.inline)
