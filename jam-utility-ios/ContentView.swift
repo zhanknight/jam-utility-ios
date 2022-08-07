@@ -80,6 +80,8 @@ struct ContentView: View {
                                 else {
                                     selectedNotes.insert(note)
                                 }
+                                print(selectedNotes)
+
                             }
                         }
                     }
@@ -98,7 +100,10 @@ struct ContentView: View {
 
                         }
                     }
-                    Text("reset button at the bottom")
+                    Button("Clear Selected Notes") {
+                        selectedNotes.removeAll()
+                        print(selectedNotes)
+                    }
                 }
             }.navigationTitle("Jam Utility").navigationBarTitleDisplayMode(.inline)
         }
