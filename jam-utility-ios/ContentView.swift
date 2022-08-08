@@ -60,7 +60,7 @@ func generateAllScales() -> Array<Scale> {
 // the UI
 struct ContentView: View {
     var test = generateAllScales()
-    @State var test2 = Array<Scale>()
+    @State var test2 = generateAllScales()
     @State private var selectedNotes: Set<String> = []
     
     var body: some View {
@@ -132,20 +132,23 @@ struct ContentView: View {
                     }
                     // results here
                     List {
-                        ForEach(test) { scales in
-                            if scales.notes().isSuperset(of: selectedNotes) {
-                                HStack {
-                                    Text(scales.quality).foregroundColor(.red)
-                                    VStack {
-                                        Text(scales.notes().joined(separator: ", "))
-                                        Text(scales.chords().joined(separator: " "))
-                                    }
+
+                       // show every matched scale
+                        ForEach(test2) { scales in
+                            HStack {
+                                Text(scales.quality).foregroundColor(.red)
+                                VStack {
+                                    Text(scales.notes().joined(separator: ", "))
+                                    Text(scales.chords().joined(separator: " "))
                                 }
                             }
+                            
                         }
                     }
+                    //Reset button here
                     Button("Clear Selected Notes") {
                         selectedNotes.removeAll()
+                        test2 = generateAllScales()
                         print(selectedNotes)
                     }
                 }
@@ -155,6 +158,9 @@ struct ContentView: View {
     
     //function runs when any note button is tapped
     func noteFilter(selection: String) {
+        
+        test2.removeAll()
+        
         if selectedNotes.contains(selection) {
             selectedNotes.remove(selection)
         }
@@ -163,14 +169,13 @@ struct ContentView: View {
         }
         print(selectedNotes)
         
-// this is where we'll create a separate array to filter from, then the list will just iterate out from here, that way we can display error if no results
+ // this is where we'll create a separate array to filter from, then the list will just iterate out from here, that way we can display error if no results
 
-//                           for scales in test {
-//                               if scales.notes().isSuperset(of: selectedNotes) {
-//                                   test2.append(scales)
-//                               }
-//                           }
-        
-        
+           for scales in test {
+               if scales.notes().isSuperset(of: selectedNotes) {
+                   test2.append(scales)
+               }
+           }
+        print(test2.count)
     }
 }
