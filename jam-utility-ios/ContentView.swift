@@ -132,17 +132,28 @@ struct ContentView: View {
                     }
                     // results here
                     List {
-
-                       // show every matched scale
-                        ForEach(test2) { scales in
+                        // check for empty results and display error
+                        if test2.count == 0 {
                             HStack {
-                                Text(scales.quality).foregroundColor(.red)
+                                Text("Oops!").foregroundColor(.red)
                                 VStack {
-                                    Text(scales.notes().joined(separator: ", "))
-                                    Text(scales.chords().joined(separator: " "))
+                                    Text("No scales found that match all selected notes.")
+                                    Text("Try deselected notes or tapping reset below.")
                                 }
                             }
-                            
+
+                        }
+                        else {
+                       // show every matched scale
+                            ForEach(test2) { scales in
+                                HStack {
+                                    Text(scales.quality).foregroundColor(.red)
+                                    VStack {
+                                        Text(scales.notes().joined(separator: ", "))
+                                        Text(scales.chords().joined(separator: " "))
+                                    }
+                                }
+                            }
                         }
                     }
                     //Reset button here
