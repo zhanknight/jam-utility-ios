@@ -59,8 +59,8 @@ func generateAllScales() -> Array<Scale> {
 
 // the UI
 struct ContentView: View {
-    var test = generateAllScales()
-    @State var test2 = generateAllScales()
+    var allScales = generateAllScales()
+    @State var matchedScales = generateAllScales()
     @State private var selectedNotes: Set<String> = []
     
     var body: some View {
@@ -101,7 +101,7 @@ struct ContentView: View {
                         }
                         HStack {
                             Button("C") {
-                                noteFilter(selection: "C")
+                                    noteFilter(selection: "C")
                             }.frame(maxWidth: .infinity)
                                 .border(Color.white)
                             Button("D") {
@@ -133,7 +133,7 @@ struct ContentView: View {
                     // results here
                     List {
                         // check for empty results and display error
-                        if test2.count == 0 {
+                        if matchedScales.count == 0 {
                             HStack {
                                 Text("Oops!").foregroundColor(.red)
                                 VStack {
@@ -145,8 +145,10 @@ struct ContentView: View {
                         }
                         else {
                        // show every matched scale
-                            ForEach(test2) { scales in
+                            ForEach(matchedScales) { scales in
+                                
                                 HStack {
+                                    
                                     Text(scales.quality).foregroundColor(.red)
                                     VStack {
                                         Text(scales.notes().joined(separator: ", "))
@@ -159,7 +161,7 @@ struct ContentView: View {
                     //Reset button here
                     Button("Clear Selected Notes") {
                         selectedNotes.removeAll()
-                        test2 = generateAllScales()
+                        matchedScales = generateAllScales()
                         print(selectedNotes)
                     }
                 }
@@ -169,24 +171,25 @@ struct ContentView: View {
     
     //function runs when any note button is tapped
     func noteFilter(selection: String) {
+      
+        matchedScales.removeAll()
         
-        test2.removeAll()
+            if selectedNotes.contains(selection) {
+                selectedNotes.remove(selection)
+            }
+            else {
+                selectedNotes.insert(selection)
+            }
         
-        if selectedNotes.contains(selection) {
-            selectedNotes.remove(selection)
-        }
-        else {
-            selectedNotes.insert(selection)
-        }
         print(selectedNotes)
         
  // this is where we'll create a separate array to filter from, then the list will just iterate out from here, that way we can display error if no results
 
-           for scales in test {
+           for scales in allScales {
                if scales.notes().isSuperset(of: selectedNotes) {
-                   test2.append(scales)
+                   matchedScales.append(scales)
                }
            }
-        print(test2.count)
+        print(matchedScales.count)
     }
 }
