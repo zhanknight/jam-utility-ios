@@ -16,14 +16,21 @@ struct Scale: Identifiable {
     var root: String = "A"
     // build chords eventually
     func chords() -> Array<String> {
-        // need to switch everything to arrays first
-      //  let tempNotes = notes()
-     //   var tempChords: Array<String>
-     //   for note in tempNotes {
-     //
-    //    }
+       let scaleNotes = notes() + notes()
+       var tempChords: Array<String> = []
         
-        return ["chords","go","here"]
+           for note in scaleNotes {
+               if tempChords.count < (scaleNotes.count / 2) {
+               let start = scaleNotes.firstIndex(of: note) ?? 0
+               var tempNotes: String = ""
+                   tempNotes.append(note)
+                   tempNotes.append(scaleNotes[start + 2])
+                   tempNotes.append(scaleNotes[start + 4])
+               tempChords.append(tempNotes)
+               }
+          }
+        
+        return tempChords
     }
     // build scale from given root note
     func notes() -> Array<String> {
