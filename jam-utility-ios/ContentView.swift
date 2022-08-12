@@ -16,15 +16,22 @@ struct Scale: Identifiable {
     var root: String = "A"
     // build chords eventually
     func chords() -> Array<String> {
+        // need to switch everything to arrays first
+      //  let tempNotes = notes()
+     //   var tempChords: Array<String>
+     //   for note in tempNotes {
+     //
+    //    }
+        
         return ["chords","go","here"]
     }
     // build scale from given root note
-    func notes() -> Set<String> {
+    func notes() -> Array<String> {
             let startNote = allNotes.firstIndex(of: root)!
-            var theNotes: Set<String> = []
-                theNotes.insert(allNotes[startNote])
+            var theNotes: Array<String> = []
+                theNotes.append(allNotes[startNote])
                     for num in intervals {
-                        theNotes.insert(allNotes[startNote + num])
+                        theNotes.append(allNotes[startNote + num])
                     }
             return theNotes
     }
@@ -32,7 +39,7 @@ struct Scale: Identifiable {
 
 let allNotes = ["A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab",
                 "A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"]
-let allNotesUnique = Array(Set(allNotes))
+let allNotesUnique = ["A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"]
 
 // the definitions
 let major = Scale(quality: "Major", intervals: [2,4,5,7,9,11])
@@ -59,9 +66,9 @@ func generateAllScales() -> Array<Scale> {
 
 // the UI
 struct ContentView: View {
-    var allScales = generateAllScales()
+    private var allScales = generateAllScales()
     @State var matchedScales = generateAllScales()
-    @State private var selectedNotes: Set<String> = []
+    @State private var selectedNotes: Array<String> = []
     
     var body: some View {
         NavigationView {
@@ -69,7 +76,7 @@ struct ContentView: View {
                 Color.init(red: 0.2, green: 0.3, blue: 0.5, opacity: 0.5)
                 VStack {
                     
-                    // buttons here
+                    // buttons here, absurd repetition, fix later
                     VStack {
                         HStack {
                             Spacer()
@@ -141,14 +148,11 @@ struct ContentView: View {
                                     Text("Try deselected notes or tapping reset below.")
                                 }
                             }
-
                         }
                         else {
                        // show every matched scale
                             ForEach(matchedScales) { scales in
-                                
                                 HStack {
-                                    
                                     Text(scales.quality).foregroundColor(.red)
                                     VStack {
                                         Text(scales.notes().joined(separator: ", "))
@@ -166,6 +170,7 @@ struct ContentView: View {
                     }
                 }
             }.navigationTitle("Jam Utility").navigationBarTitleDisplayMode(.inline)
+            
         }
     }
     
@@ -175,21 +180,21 @@ struct ContentView: View {
         matchedScales.removeAll()
         
             if selectedNotes.contains(selection) {
-                selectedNotes.remove(selection)
+                let index = selectedNotes.firstIndex(of: selection)
+                selectedNotes.remove(at: index!)
             }
             else {
-                selectedNotes.insert(selection)
+                selectedNotes.append(selection)
             }
-        
         print(selectedNotes)
         
  // this is where we'll create a separate array to filter from, then the list will just iterate out from here, that way we can display error if no results
-
            for scales in allScales {
-               if scales.notes().isSuperset(of: selectedNotes) {
+               if Set(scales.notes()).isSuperset(of: selectedNotes) {
                    matchedScales.append(scales)
                }
            }
         print(matchedScales.count)
+        return
     }
 }
